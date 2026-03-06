@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C4 AI Architect</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header>
+    <div class="logo">C4 Architect</div>
+    <div class="sep"></div>
+    <div style="display:flex;gap:3px;">
+      <div class="lvl on" data-lv="1" onclick="setLv(1)">L1 Context</div>
+      <div class="lvl" data-lv="2" onclick="setLv(2)">L2 Container</div>
+      <div class="lvl" data-lv="3" onclick="setLv(3)">L3 Component</div>
+      <div class="lvl" data-lv="4" onclick="setLv(4)">L4 Code</div>
+    </div>
+    <div class="sep"></div>
+    <button class="hbtn" onclick="clearAll()">⌫ Clear</button>
+    <button class="hbtn" onclick="fitView()">⊡ Fit</button>
+    <button class="hbtn" onclick="exportSVG()">⤓ SVG</button>
+    <button class="hbtn pri" onclick="autoLayout()">⟳ Layout</button>
+  </header>
+  <div class="wrap">
+    <div class="side">
+      <div class="sec">
+        <div class="stitle">C4 Elements</div>
+        <div class="sgrid">
+          <div class="sitem" draggable="true" data-type="person" ondragstart="ds(event)">
+            <div class="sicon" style="color:#3d7eff">👤</div>
+            <div class="slbl">Person</div>
+          </div>
+          <div class="sitem" draggable="true" data-type="system" ondragstart="ds(event)">
+            <div class="sicon" style="color:#00e5c3">⬡</div>
+            <div class="slbl">System</div>
+          </div>
+          <div class="sitem" draggable="true" data-type="container" ondragstart="ds(event)">
+            <div class="sicon" style="color:#a78bfa">▭</div>
+            <div class="slbl">Container</div>
+          </div>
+          <div class="sitem" draggable="true" data-type="component" ondragstart="ds(event)">
+            <div class="sicon" style="color:#fbbf24">◫</div>
+            <div class="slbl">Component</div>
+          </div>
+          <div class="sitem" draggable="true" data-type="database" ondragstart="ds(event)">
+            <div class="sicon" style="color:#f87171">🗄</div>
+            <div class="slbl">Database</div>
+          </div>
+          <div class="sitem" draggable="true" data-type="external" ondragstart="ds(event)">
+            <div class="sicon" style="color:#6b7280">⬡</div>
+            <div class="slbl">External</div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="stitle">🎨 Theme</div>
+        <div class="throw">
+          <div class="thsw" id="th-dark" style="background:linear-gradient(135deg,#0b0e14,#1e2a42)"
+            onclick="setTheme('dark')"></div>
+          <div class="thsw" id="th-blueprint" style="background:linear-gradient(135deg,#001f3f,#0074d9)"
+            onclick="setTheme('blueprint')"></div>
+          <div class="thsw on" id="th-light" style="background:linear-gradient(135deg,#f0f4ff,#c7d7ff)"
+            onclick="setTheme('light')"></div>
+          <div class="thsw" id="th-neon" style="background:linear-gradient(135deg,#0d0d0d,#ff00ff)"
+            onclick="setTheme('neon')"></div>
+          <div class="thsw" id="th-forest" style="background:linear-gradient(135deg,#0a1a0a,#00ff88)"
+            onclick="setTheme('forest')"></div>
+          <div class="thsw" id="th-warm" style="background:linear-gradient(135deg,#1a0a00,#ff8800)"
+            onclick="setTheme('warm')"></div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="stitle">Node Colors</div>
+        <div id="palette"></div>
+      </div>
+      <div class="sec">
+        <div class="stitle">Templates</div>
+        <div class="tpl" onclick="loadTpl('ecommerce')"><span>🛒</span><span>E-Commerce</span></div>
+        <div class="tpl" onclick="loadTpl('banking')"><span>🏦</span><span>Banking</span></div>
+        <div class="tpl" onclick="loadTpl('microservices')"><span>⚙️</span><span>Microservices</span></div>
+        <div class="tpl" onclick="loadTpl('saas')"><span>☁️</span><span>SaaS Platform</span></div>
+      </div>
+      <div class="sec" style="flex:1">
+        <div class="stitle">Properties</div>
+        <div id="propbox">Select element</div>
+      </div>
+    </div>
+
+    <div class="cvswrap" id="cvswrap">
+      <div class="tools">
+        <div class="tool on" id="tool-select" onclick="setTool('select')" title="Select [V]">↖</div>
+        <div class="tool" id="tool-connect" onclick="setTool('connect')" title="Connect [C]">⟶</div>
+        <div class="tool" id="tool-pan" onclick="setTool('pan')" title="Pan [Space]">✥</div>
+      </div>
+      <canvas id="cvs"></canvas>
+      <div class="hintbar" id="hintbar">↖ Di chuột lên thành phần để xem hành động · Kéo viền node để kết nối · Kéo line
+        để uốn cong</div>
+    </div>
+
+    <div class="aipanel">
+      <div class="aihead">
+        <div class="aibadge">✦</div>
+        <div>
+          <div class="aititle">AI Architect</div>
+          <div style="font-size:9px;color:var(--mu);font-family:'DM Mono',monospace">claude-sonnet-4-20250514</div>
+        </div>
+        <div class="aidot" id="aidot"></div>
+      </div>
+      <div class="msgs" id="msgs"></div>
+      <div class="dbgbox" id="dbgbox"></div>
+      <div class="aifoot">
+        <div class="krow">
+          <input class="ki" type="password" id="apikey" placeholder="sk-ant-... (API Key)">
+          <button class="ksave" id="ksave" onclick="saveKey()">Save</button>
+        </div>
+        <div class="irow">
+          <textarea class="tinp" id="pinp" rows="2" placeholder="Mô tả hệ thống..." onkeydown="onKey(event)"></textarea>
+          <button class="sbtn" id="sbtn" onclick="send()">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sbar">
+    <div class="dot"></div><span id="stxt">Ready</span>
+    <span>|</span><span id="ncnt">0 elements</span>
+    <span>|</span><span id="slvl">Level 1: System Context</span>
+    <span style="margin-left:auto" id="szoom">100%</span>
+  </div>
+  <div id="tip"></div>
+
+  <!-- JavaScript Components -->
+  <script src="js/themes.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/geometry.js"></script>
+  <script src="js/hit-testing.js"></script>
+  <script src="js/nodes.js"></script>
+  <script src="js/segments.js"></script>
+  <script src="js/hover.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/tools.js"></script>
+  <script src="js/ai-chat.js"></script>
+  <script src="js/templates.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
