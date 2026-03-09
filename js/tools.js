@@ -12,9 +12,10 @@ function fitView() {
     if (!S.nodes.length) return;
     const xs = S.nodes.map(n => n.x), ys = S.nodes.map(n => n.y), xe = S.nodes.map(n => n.x + n.w), ye = S.nodes.map(n => n.y + n.h);
     const mnx = Math.min(...xs) - 40, mny = Math.min(...ys) - 40, mxx = Math.max(...xe) + 40, mxy = Math.max(...ye) + 40;
-    S.zoom = Math.min(cvs.width / (mxx - mnx), cvs.height / (mxy - mny), 2.5);
-    S.pan.x = -mnx * S.zoom + (cvs.width - (mxx - mnx) * S.zoom) / 2;
-    S.pan.y = -mny * S.zoom + (cvs.height - (mxy - mny) * S.zoom) / 2;
+    const cw = cvs.cssWidth || cvs.width, ch = cvs.cssHeight || cvs.height;
+    S.zoom = Math.min(cw / (mxx - mnx), ch / (mxy - mny), 2.5);
+    S.pan.x = -mnx * S.zoom + (cw - (mxx - mnx) * S.zoom) / 2;
+    S.pan.y = -mny * S.zoom + (ch - (mxy - mny) * S.zoom) / 2;
     document.getElementById('szoom').textContent = Math.round(S.zoom * 100) + '%'; draw();
 }
 function autoLayout() {

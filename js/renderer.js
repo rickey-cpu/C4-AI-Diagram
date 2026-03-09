@@ -3,16 +3,20 @@
 // ─────────────────────────────────────────────────────────────
 function _render() {
     const T = TH[S.theme] || TH.dark;
-    ctx.clearRect(0, 0, cvs.width, cvs.height);
-    ctx.fillStyle = T.bg; ctx.fillRect(0, 0, cvs.width, cvs.height);
+    const w = cvs.cssWidth || cvs.width;
+    const h = cvs.cssHeight || cvs.height;
+
+    // Clear rect uses logical coordinates because ctx is already scaled by DPR
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = T.bg; ctx.fillRect(0, 0, w, h);
 
     // Grid
     const gs = SNAP * S.zoom;
     const ox = ((S.pan.x % (gs * 3)) + gs * 3) % (gs * 3), oy = ((S.pan.y % (gs * 3)) + gs * 3) % (gs * 3);
     ctx.save();
     ctx.strokeStyle = T.gr; ctx.lineWidth = .5; ctx.globalAlpha = .22;
-    for (let x = ox - gs * 3; x < cvs.width + gs * 3; x += gs) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, cvs.height); ctx.stroke(); }
-    for (let y = oy - gs * 3; y < cvs.height + gs * 3; y += gs) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cvs.width, y); ctx.stroke(); }
+    for (let x = ox - gs * 3; x < w + gs * 3; x += gs) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+    for (let y = oy - gs * 3; y < h + gs * 3; y += gs) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
     ctx.globalAlpha = 1; ctx.restore();
 
     ctx.save();
